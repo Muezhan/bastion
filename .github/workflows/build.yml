@@ -15,9 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     # Build inside an old, glibc-pinned base instead of the runner's own
     # (frequently-bumped) glibc - a PyInstaller binary only runs on a glibc
-    # >= the one it was built against, never older. Debian 11 (glibc 2.31)
-    # covers Ubuntu 20.04+/Debian 11+ and everything newer.
-    container: debian:11-slim
+    # >= the one it was built against, never older. Debian 12 (glibc 2.36)
+    # is the current Debian stable (valid repos, unlike 11's expired
+    # security archive) and still covers most hosts in the wild.
+    container: debian:12-slim
     steps:
       - uses: actions/checkout@v4
 
