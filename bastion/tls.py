@@ -5,6 +5,8 @@ import ssl
 import subprocess
 from pathlib import Path
 
+from bastion.common import subprocess_env
+
 
 def gen_cert(certs_dir, common_name):
     certs_dir = Path(certs_dir)
@@ -21,6 +23,7 @@ def gen_cert(certs_dir, common_name):
             "-subj", f"/CN={common_name}",
         ],
         check=True,
+        env=subprocess_env(),
     )
     return certfile, keyfile
 

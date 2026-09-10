@@ -8,7 +8,7 @@ import asyncio
 import hmac
 import ssl
 
-from bastion.common import send_msg, recv_msg, cert_fingerprint
+from bastion.common import send_msg, recv_msg, cert_fingerprint, subprocess_env
 
 
 async def run_cmd(cmd):
@@ -16,6 +16,7 @@ async def run_cmd(cmd):
         cmd,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
+        env=subprocess_env(),
     )
     stdout, stderr = await proc.communicate()
     return {
