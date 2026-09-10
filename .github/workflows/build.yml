@@ -28,7 +28,9 @@ jobs:
           apt-get install -y --no-install-recommends python3 python3-pip openssl ca-certificates
 
       - name: Install build dependencies
-        run: pip3 install --no-cache-dir -r requirements-build.txt
+        # This container is ephemeral (torn down after the job), so
+        # overriding Debian's PEP 668 system-package guard is safe here.
+        run: pip3 install --no-cache-dir --break-system-packages -r requirements-build.txt
 
       - name: Build bastion-server
         run: python3 -m PyInstaller --onefile --name bastion-server-linux server_main.py
