@@ -43,8 +43,15 @@ Ships as two single-file binaries, built by CI:
 ## Getting the binaries
 
 Download the latest release's `bastion-server-linux` and
-`bastion-client-linux` from the repo's Releases page, or build them
-yourself:
+`bastion-client-linux` from the repo's Releases page. Downloaded files are
+never executable by default (that's an HTTP-transfer limitation, not a bug
+in the build) - set the bit yourself:
+
+```bash
+chmod +x bastion-server-linux bastion-client-linux
+```
+
+Or build them yourself:
 
 ```bash
 pip install -r requirements-build.txt
