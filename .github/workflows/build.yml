@@ -25,7 +25,7 @@ jobs:
       - name: Install system dependencies
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends python3 python3-pip openssl ca-certificates
+          apt-get install -y --no-install-recommends python3 python3-pip openssl ca-certificates binutils
 
       - name: Install build dependencies
         # This container is ephemeral (torn down after the job), so
