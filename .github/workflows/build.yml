@@ -1,0 +1,47 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build dependencies
+        run: pip install -r requirements-build.txt
+
+      - name: Build bastion-server
+        run: pyinstaller --onefile --name bastion-server-linux server_main.py
+
+      - name: Build bastion-client
+        run: pyinstaller --onefile --name bastion-client-linux client_main.py
+
+      - name: Smoke test binaries
+        run: |
+          ./dist/bastion-server-linux --help
+          ./dist/bastion-client-linux --help
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bastion-linux-binaries
+          path: |
+            dist/bastion-server-linux
+            dist/bastion-client-linux
+
+      - name: Attach binaries to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/bastion-server-linux
+            dist/bastion-client-linux
