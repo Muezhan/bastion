@@ -13,21 +13,27 @@ permissions:
 jobs:
   build-linux:
     runs-on: ubuntu-latest
+    # Build inside an old, glibc-pinned base instead of the runner's own
+    # (frequently-bumped) glibc - a PyInstaller binary only runs on a glibc
+    # >= the one it was built against, never older. Debian 11 (glibc 2.31)
+    # covers Ubuntu 20.04+/Debian 11+ and everything newer.
+    container: debian:11-slim
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3 python3-pip openssl ca-certificates
 
       - name: Install build dependencies
-        run: pip install -r requirements-build.txt
+        run: pip3 install --no-cache-dir -r requirements-build.txt
 
       - name: Build bastion-server
-        run: pyinstaller --onefile --name bastion-server-linux server_main.py
+        run: python3 -m PyInstaller --onefile --name bastion-server-linux server_main.py
 
       - name: Build bastion-client
-        run: pyinstaller --onefile --name bastion-client-linux client_main.py
+        run: python3 -m PyInstaller --onefile --name bastion-client-linux client_main.py
 
       - name: Smoke test binaries
         run: |
